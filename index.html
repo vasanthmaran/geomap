@@ -37,7 +37,7 @@
         mounted() {
             window.facilioApp = FacilioAppSDK.init();
             window.facilioApp.on('app.loaded', (data) => {
-                console.log(data)
+                console.log("mela irukkura data", data)
                 let timeParamMap = {};
                 if (data && data.context && data.context.dashboardFilter && data.context.dashboardFilter && data.context.dashboardFilter.timelineFilter) {
                     let paramMap = {
@@ -68,33 +68,32 @@
         },
         methods: {
             functionDataLoad(timeParamMap) {
-                let res
-                let urlParams = {
-                    method: 'post',
-                    data: {
-                        workflowId: 9371,
-                        paramList: [timeParamMap]
-                    }
-                }
-                window.facilioApp.request.invokeFacilioAPI('/v2/workflow/runWorkflow', urlParams)
-                    .then((response) => {
-                        if (response.result && response.result.workflow) {
-                            res = response.result && response.result.workflow && response.result.workflow.returnValue && response.result.workflow.returnValue
+                const url = "https://raw.githubusercontent.com/vasanthmaran/geomap/main/mapUSA.json";
+                fetch(url).then((response) => {
+                        return response.json();
+                    })
+                    .then(usaJson => {
+
+                        console.log("timeParamMap", timeParamMap)
+                        let res
+                        let urlParams = {
+                            method: 'post',
+                            data: {
+                                workflowId: 9371,
+                                paramList: [timeParamMap]
+                            }
                         }
-                        console.log(res)
-
-                        var chartDom = document.getElementById('main');
-                        var theme = 'vintage'
-                        var myChart = echarts.init(chartDom, theme);
-                        var option
-
-                        const url = "https://raw.githubusercontent.com/vasanthmaran/geomap/main/mapUSA.json";
-
-                        fetch(url) //1
+                        window.facilioApp.request.invokeFacilioAPI('/v2/workflow/runWorkflow', urlParams)
                             .then((response) => {
-                                return response.json();
-                            })
-                            .then(usaJson => {
+                                if (response.result && response.result.workflow) {
+                                    res = response.result && response.result.workflow && response.result.workflow.returnValue && response.result.workflow.returnValue
+                                }
+                                console.log(res)
+
+                                var chartDom = document.getElementById('main');
+                                var theme = 'vintage'
+                                var myChart = echarts.init(chartDom, theme);
+                                var option
 
                                 echarts.registerMap('USA', usaJson, {
                                     Alaska: {
@@ -172,7 +171,6 @@
                             })
                     })
             }
-
         },
     })
 </script>
@@ -185,6 +183,6 @@
         width: 100%;
         height: 80%;
     }
-    
 </style>
+
 </html>
