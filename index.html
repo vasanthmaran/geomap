@@ -68,7 +68,7 @@
         },
         methods: {
             functionDataLoad(timeParamMap) {
-                
+              this.loading = true
               const url = "https://raw.githubusercontent.com/vasanthmaran/geomap/main/mapUSA.json";
               fetch(url).then((response) => {
                       return response.json();
@@ -168,9 +168,8 @@
                                   }]
                               };
                               myChart.setOption(option);
-                              
+                              this.loading = false
                           })
-                  this.loading = false
                   })
             }
         },
