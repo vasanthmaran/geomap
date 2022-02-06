@@ -37,7 +37,7 @@
         mounted() {
             window.facilioApp = FacilioAppSDK.init();
             window.facilioApp.on('app.loaded', (data) => {
-                console.log("mela irukkura data", data)
+                console.log(data)
                 let timeParamMap = {};
                 if (data && data.context && data.context.dashboardFilter && data.context.dashboardFilter && data.context.dashboardFilter.timelineFilter) {
                     let paramMap = {
@@ -68,108 +68,109 @@
         },
         methods: {
             functionDataLoad(timeParamMap) {
-                const url = "https://raw.githubusercontent.com/vasanthmaran/geomap/main/mapUSA.json";
-                fetch(url).then((response) => {
-                        return response.json();
-                    })
-                    .then(usaJson => {
+                
+              const url = "https://raw.githubusercontent.com/vasanthmaran/geomap/main/mapUSA.json";
+              fetch(url).then((response) => {
+                      return response.json();
+                  })
+                  .then(usaJson => {
 
-                        console.log("timeParamMap", timeParamMap)
-                        let res
-                        let urlParams = {
-                            method: 'post',
-                            data: {
-                                workflowId: 9371,
-                                paramList: [timeParamMap]
-                            }
-                        }
-                        window.facilioApp.request.invokeFacilioAPI('/v2/workflow/runWorkflow', urlParams)
-                            .then((response) => {
-                                if (response.result && response.result.workflow) {
-                                    res = response.result && response.result.workflow && response.result.workflow.returnValue && response.result.workflow.returnValue
-                                }
-                                console.log(res)
+                      console.log("timeParamMap", timeParamMap)
+                      let res
+                      let urlParams = {
+                          method: 'post',
+                          data: {
+                              workflowId: 9371,
+                              paramList: [timeParamMap]
+                          }
+                      }
+                      window.facilioApp.request.invokeFacilioAPI('/v2/workflow/runWorkflow', urlParams)
+                          .then((response) => {
+                              if (response.result && response.result.workflow) {
+                                  res = response.result && response.result.workflow && response.result.workflow.returnValue && response.result.workflow.returnValue
+                              }
+                              console.log(res)
 
-                                var chartDom = document.getElementById('main');
-                                var theme = 'vintage'
-                                var myChart = echarts.init(chartDom, theme);
-                                var option
+                              var chartDom = document.getElementById('main');
+                              var theme = 'vintage'
+                              var myChart = echarts.init(chartDom, theme);
+                              var option
 
-                                echarts.registerMap('USA', usaJson, {
-                                    Alaska: {
-                                        left: -131,
-                                        top: 25,
-                                        width: 15
-                                    },
-                                    Hawaii: {
-                                        left: -110,
-                                        top: 28,
-                                        width: 5
-                                    },
-                                    'Puerto Rico': {
-                                        left: -76,
-                                        top: 26,
-                                        width: 2
-                                    }
-                                });
-                                option = {
-                                    title: {
-                                        text: res.title,
-                                        left: 'center'
-                                    },
-                                    tooltip: {
-                                        trigger: 'item',
-                                        showDelay: 0,
-                                        transitionDuration: 0.2
-                                    },
-                                    visualMap: {
-                                        left: 'right',
-                                        orient: 'vertical',
-                                        itemWidth: 20,
-                                        itemHeight: 200,
-                                        min: res.min,
-                                        max: res.max,
-                                        inRange: {
-                                            color: ['lightskyblue', 'yellow', 'orangered']
-                                        },
-                                        text: ['Max', 'Min'],
-                                        calculable: true
-                                    },
-                                    toolbox: {
-                                        show: false,
-                                        orient: 'vertical',
-                                        left: 'left',
-                                        top: 'top',
-                                        feature: {
-                                            dataView: {
-                                                readOnly: false
-                                            },
-                                            restore: {},
-                                            saveAsImage: {}
-                                        }
-                                    },
-                                    series: [{
-                                        name: 'Energy (MWh)',
-                                        type: 'map',
-                                        roam: false,
-                                        map: 'USA',
-                                        emphasis: {
-                                            itemStyle: {
-                                                areaColor: "white",
-                                                shadowColor: 'rgba(0, 0, 0, 0.5)',
-                                                shadowBlur: 10
-                                            },
-                                            label: {
-                                                show: true
-                                            }
-                                        },
-                                        data: res.data
-                                    }]
-                                };
-                                myChart.setOption(option);
-                                this.loading = false
-                            })
-                    })
+                              echarts.registerMap('USA', usaJson, {
+                                  Alaska: {
+                                      left: -131,
+                                      top: 25,
+                                      width: 15
+                                  },
+                                  Hawaii: {
+                                      left: -110,
+                                      top: 28,
+                                      width: 5
+                                  },
+                                  'Puerto Rico': {
+                                      left: -76,
+                                      top: 26,
+                                      width: 2
+                                  }
+                              });
+                              option = {
+                                  title: {
+                                      text: res.title,
+                                      left: 'center'
+                                  },
+                                  tooltip: {
+                                      trigger: 'item',
+                                      showDelay: 0,
+                                      transitionDuration: 0.2
+                                  },
+                                  visualMap: {
+                                      left: 'right',
+                                      orient: 'vertical',
+                                      itemWidth: 20,
+                                      itemHeight: 200,
+                                      min: res.min,
+                                      max: res.max,
+                                      inRange: {
+                                          color: ['lightskyblue', 'yellow', 'orangered']
+                                      },
+                                      text: ['Max', 'Min'],
+                                      calculable: true
+                                  },
+                                  toolbox: {
+                                      show: false,
+                                      orient: 'vertical',
+                                      left: 'left',
+                                      top: 'top',
+                                      feature: {
+                                          dataView: {
+                                              readOnly: false
+                                          },
+                                          restore: {},
+                                          saveAsImage: {}
+                                      }
+                                  },
+                                  series: [{
+                                      name: 'Energy (MWh)',
+                                      type: 'map',
+                                      roam: false,
+                                      map: 'USA',
+                                      emphasis: {
+                                          itemStyle: {
+                                              areaColor: "white",
+                                              shadowColor: 'rgba(0, 0, 0, 0.5)',
+                                              shadowBlur: 10
+                                          },
+                                          label: {
+                                              show: true
+                                          }
+                                      },
+                                      data: res.data
+                                  }]
+                              };
+                              myChart.setOption(option);
+                              this.loading = false
+                          })
+                  })
             }
         },
     })
@@ -183,6 +184,6 @@
         width: 100%;
         height: 80%;
     }
+    
 </style>
-
 </html>
